@@ -8,18 +8,21 @@
 		<script type="text/javascript" src="/assets/js/popup.js"></script>
 	</head>
 	<body>
-		<textarea id="debug"></textarea>
-		<table id="positions"></table>
 		<button id="start">Install</button>
 		<button id="get_ads">Get Ads</button>
 		<button id="update">Update</button>
+		<table id="positions"></table>
 		<script type="application/mustache" id="t_positions">
 			{{#ads}}
 			<tr data-id={{id}}>
-				<td>{{id}}</td>
+				<td class="title">{{id}}</td>
 				<td><input class="width" data-val="{{width}}" value="{{width}}"></td>
-				<td><input class="height" data-val="{{width}}" value="{{height}}"></td>
-				<td><button class="reset" title="Reset">R</button></td>
+				<td><input class="height" data-val="{{height}}" value="{{height}}"></td>
+				<td><textarea class="html" data-val="{{html}}">{{{html}}}</textarea></td>
+				<td class="nbsp">
+					<button class="image" title="Insert Image">I</button>
+					<button class="reset" title="Reset">R</button>
+				</td>
 			</tr>
 			{{/ads}}
 		</script>

@@ -1,4 +1,18 @@
+#positions td {
+	vertical-align: top;
+}
 #positions input {
-	width: 3em
+	width: 3em;
 	border: 1px solid #333
+}
+#positions textarea {
+	height: 1em;
+	overflow:hidden;
+}
+#positions textarea:focus {
+	height: 10em;
+	overflow: auto;
+}
+.nbsp {
+	white-space: nowrap;
 }

@@ -5,14 +5,24 @@ window.Adr = window.Adr || {}
 
 window.Adr.Popup =
 
-	data: [],
 
 	init: ->
 		self = @
 		@$positions = $ '#positions'
 		chrome.runtime.onMessage.addListener (request, sender, sendResponse) ->	
 			self[request.exec] request.args..., sendResponse if self[request.exec]?
+		@install().done () ->
+			self.getPositions()
 
+	getCurrentTabId: ->
+		def = new $.Deferred()
+		chrome.tabs.query
+			active: true,
+			currentWindow: true
+		, (tabs) ->
+			def.resolve tabs[0]
+
+		def
 	send: (cmd, args..., callback) ->
 		chrome.runtime.sendMessage
 			exec:	cmd
@@ -20,19 +30,24 @@ window.Adr.Popup =
 		, callback || () ->
 
 	sendCS: (exec, args..., callback) ->
-		chrome.tabs.query
-			active: true,
-			currentWindow: true
-		, (tabs) ->
-			chrome.tabs.sendMessage tabs[0].id,
+		@getCurrentTabId().done (tab) ->
+			chrome.tabs.sendMessage tab.id,
 				exec: exec,
 				args: args
 			, callback || ()->
 
 	install: ->
-		chrome.tabs.executeScript null, {file: "assets/js/external/jquery-2.0.3.min.js"}
-		chrome.tabs.executeScript null, {file: "assets/js/injection.js"}
-		log 'installed'
+		def = new $.Deferred()
+		chrome.tabs.executeScript null,
+			file: "assets/js/external/jquery-2.0.3.min.js"
+			allFrames: false
+		, () ->
+			chrome.tabs.executeScript null,
+				file: "assets/js/injection.js"
+				allFrames: false
+			, () ->
+				def.resolve()
+		def
 
 	getPositions: ->
 		self = @
@@ -50,7 +65,7 @@ window.Adr.Popup =
 		data = @collectData @$positions
 		@sendCS 'updatePositions', data, (response) ->
 			log response
-	
+
 	collectData: ($container) ->
 		data = []
 		$container.find('tr').each (index, element) ->
@@ -59,9 +74,11 @@ window.Adr.Popup =
 				id: $el.data 'id'
 				width: $el.find('.width').val()
 				height: $el.find('.height').val()
+				html: $el.find('.html').val()
 		data
 
-
+	highlight: (id) ->
+		@sendCS 'highlight', id, ->
 
 $ ->
 	Adr.Popup.init();
@@ -77,5 +94,27 @@ $ ->
 	$('#update').bind 'click', (event) ->
 		event.preventDefault()
 		Adr.Popup.update()
-	
-	#Adr.Popup.getPositions()
+
+	$('#positions').on 'click', 'button.reset', () ->
+		$row = $(this).parent().parent()
+
+		$width = $row.find '.width'
+		$width.val $width.data 'val'
+
+		$height = $row.find '.height'
+		$height.val $height.data 'val'
+
+		$html = $row.find '.html'
+		$html.val $html.data 'val'
+
+	$('#positions').on 'click', 'button.image', () ->
+		$row = $(this).parent().parent()
+		$row.find('.html').html('[image]')
+
+	$(document).on
+		mouseenter: ->
+			$row = $(this).parent()
+			id = $row.data 'id'
+			Adr.Popup.highlight id
+	, '#positions td.title'
+
