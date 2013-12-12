@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Adressor</title>
+		<link rel="stylesheet" type="text/css" href="/assets/css/popup.css" />
+		<script type="text/javascript" src="/assets/js/external/jquery-2.0.3.min.js"></script>
+		<script type="text/javascript" src="/assets/js/external/mustache.js"></script>
+		<script type="text/javascript" src="/assets/js/popup.js"></script>
+	</head>
+	<body>
+		<textarea id="debug"></textarea>
+		<table id="positions"></table>
+		<button id="start">Install</button>
+		<button id="get_ads">Get Ads</button>
+		<script type="application/mustache" id="t_positions">
+			{{#ads}}
+			<tr>
+				<td>{{id}}</td>
+				<td><input value="{{width}}"></td>
+				<td><input value="{{height}}"></td>
+			</tr>
+			{{/ads}}
+		</script>
+	</body>
+</html>

@@ -1,0 +1,14 @@
+{
+	"manifest_version": 2,
+	"name": "Adressor",
+	"description": "Modifies ads on Wikia pages",
+	"version": "1.0",
+
+	"permissions": [
+		"http://*.wikia.com/",
+		"http://*.wikia-dev.com/"
+	],
+	"browser_action": {
+		"default_popup": "assets/popup.html"
+	}
+}
