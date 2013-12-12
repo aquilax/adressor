@@ -5,8 +5,11 @@ window.Adr = window.Adr || {}
 
 window.Adr.Popup =
 
+	data: [],
+
 	init: ->
 		self = @
+		@$positions = $ '#positions'
 		chrome.runtime.onMessage.addListener (request, sender, sendResponse) ->	
 			self[request.exec] request.args..., sendResponse if self[request.exec]?
 
@@ -37,12 +40,28 @@ window.Adr.Popup =
 			self.renderPositions response
 
 	renderPositions: (positions)->
-		$positions = $ '#positions'
-		$positions.empty()
+		@$positions.empty()
 		template = $('#t_positions').text();
 		items = Mustache.render template,
 			ads: positions
-		$positions.append(items)
+		@$positions.append(items)
+
+	update: () ->
+		data = @collectData @$positions
+		@sendCS 'updatePositions', data, (response) ->
+			log response
+	
+	collectData: ($container) ->
+		data = []
+		$container.find('tr').each (index, element) ->
+			$el = $ element
+			data.push
+				id: $el.data 'id'
+				width: $el.find('.width').val()
+				height: $el.find('.height').val()
+		data
+
+
 
 $ ->
 	Adr.Popup.init();
@@ -55,6 +74,8 @@ $ ->
 		event.preventDefault()
 		Adr.Popup.getPositions()
 
-
+	$('#update').bind 'click', (event) ->
+		event.preventDefault()
+		Adr.Popup.update()
 	
 	#Adr.Popup.getPositions()

@@ -7,8 +7,7 @@ window.Adr =
 	init: ->
 		self = @
 		chrome.runtime.onMessage.addListener (request, sender, sendResponse) ->
-			console.log self, request
-			sendResponse self[request.exec] request.args...
+			sendResponse self[request.exec] request.args... if self[request.exec]
 
 	getPositions: (callback) ->
 		result = []
@@ -20,6 +19,23 @@ window.Adr =
 				width: $ad.width()
 		console.log result
 		result
+
+	updatePositions: (data, callback) ->
+		self = @
+		$.each data, (index, ad) ->
+			self.updateAd $('#'+ad.id), ad
+		'done'
+
+	updateAd: ($ad, ad) ->
+		console.log $ad, ad
+		changed = false
+		if $ad.width() != ad.with
+			$ad.width(ad.width)
+			changed = true
+		if $ad.height() != ad.height
+			$ad.height(ad.height)
+			changed = true
+		$ad.css 'overflow', 'hidden' if changed
 
 $ ->
 	Adr.init()

@@ -11,9 +11,11 @@
   window.Adr = window.Adr || {};
 
   window.Adr.Popup = {
+    data: [],
     init: function() {
       var self;
       self = this;
+      this.$positions = $('#positions');
       return chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         if (self[request.exec] != null) {
           return self[request.exec].apply(self, __slice.call(request.args).concat([sendResponse]));
@@ -58,14 +60,34 @@
       });
     },
     renderPositions: function(positions) {
-      var $positions, items, template;
-      $positions = $('#positions');
-      $positions.empty();
+      var items, template;
+      this.$positions.empty();
       template = $('#t_positions').text();
       items = Mustache.render(template, {
         ads: positions
       });
-      return $positions.append(items);
+      return this.$positions.append(items);
+    },
+    update: function() {
+      var data;
+      data = this.collectData(this.$positions);
+      return this.sendCS('updatePositions', data, function(response) {
+        return log(response);
+      });
+    },
+    collectData: function($container) {
+      var data;
+      data = [];
+      $container.find('tr').each(function(index, element) {
+        var $el;
+        $el = $(element);
+        return data.push({
+          id: $el.data('id'),
+          width: $el.find('.width').val(),
+          height: $el.find('.height').val()
+        });
+      });
+      return data;
     }
   };
 
@@ -75,9 +97,13 @@
       event.preventDefault();
       return Adr.Popup.install();
     });
-    return $('#get_ads').bind('click', function(event) {
+    $('#get_ads').bind('click', function(event) {
       event.preventDefault();
       return Adr.Popup.getPositions();
+    });
+    return $('#update').bind('click', function(event) {
+      event.preventDefault();
+      return Adr.Popup.update();
     });
   });
 

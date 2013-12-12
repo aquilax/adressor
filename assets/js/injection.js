@@ -9,8 +9,9 @@
       var self;
       self = this;
       return chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-        console.log(self, request);
-        return sendResponse(self[request.exec].apply(self, request.args));
+        if (self[request.exec]) {
+          return sendResponse(self[request.exec].apply(self, request.args));
+        }
       });
     },
     getPositions: function(callback) {
@@ -27,6 +28,30 @@
       });
       console.log(result);
       return result;
+    },
+    updatePositions: function(data, callback) {
+      var self;
+      self = this;
+      $.each(data, function(index, ad) {
+        return self.updateAd($('#' + ad.id), ad);
+      });
+      return 'done';
+    },
+    updateAd: function($ad, ad) {
+      var changed;
+      console.log($ad, ad);
+      changed = false;
+      if ($ad.width() !== ad["with"]) {
+        $ad.width(ad.width);
+        changed = true;
+      }
+      if ($ad.height() !== ad.height) {
+        $ad.height(ad.height);
+        changed = true;
+      }
+      if (changed) {
+        return $ad.css('overflow', 'hidden');
+      }
     }
   };
 
