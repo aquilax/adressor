@@ -9,15 +9,26 @@
 	</head>
 	<body>
 		<div id="command" style="display:none">
-			<button id="update" class="fr">Update Page</button>
+			<div class="fr">
+				<img src="/assets/img/ajax-loader.gif" id="throbber" style="display:none"/>
+				<button id="update">Update Page</button>
+			</div>
 			<label for="preset">Presets:</label>
 			<select id="presets">
 				<option value="">Presets</option>
 			</select>
 			<button id="load_preset">Load</button>
 			<button id="save_preset">Save</button>
+			<a href="#" id="config">config</a>
 		</div>			
 		<div id="positions"></div>
+		<div id="settings" style="display:none">
+			<button id="export">Export</button>
+			<button id="import">Import</button>
+			<button id="clear">Reset Settings</button>
+			<textarea id="data" cols="60" rows="5"></textarea>
+			<div class="notification">You can export your presets here and import them in another browser.</div>
+		</div>
 		<script type="application/mustache" id="t_options">
 			{{#presets}}
 			<option value={{.}}>{{.}}</option>

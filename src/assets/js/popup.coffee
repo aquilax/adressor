@@ -53,6 +53,11 @@ window.Adr.Config =
 	jImport: (json) ->
 		@_data = JSON.parse json
 		@_data = @_default if !@_data?
+		@save()
+
+	reset: ->
+		@_data = @_default
+		@save();
 
 window.Adr.Popup =
 
@@ -65,14 +70,17 @@ window.Adr.Popup =
 			self[request.exec] request.args..., sendResponse if self[request.exec]?
 		# TODO: Load is async
 		@_config.load ->
-			self._updatePresets()
+			self.updatePresets()
 	
-	installInTab: ($positions, callback) ->
+	installInTab: ($positions, $throbber, callback) ->
 		self = @
 		@$positions = $positions
+		@$throbber = $throbber
+		@lShow()
 		@getCurrentTab (tab) ->
 			self.install tab, ->
 				self.getPositions (callback)
+				self.lHide()
 					
 
 	install: (tab, callback) ->
@@ -130,9 +138,11 @@ window.Adr.Popup =
 
 
 	update: () ->
+		self = @
+		@lShow()
 		data = @collectData @$positions, true
 		@sendCS 'updatePositions', data, (response) ->
-			log response
+			self.lHide()
 
 	collectData: ($container, changesOnly) ->
 		data = []
@@ -169,22 +179,30 @@ window.Adr.Popup =
 	savePreset: (preset) ->
 		if preset != ''
 			@_config.addPreset preset, @collectData @$positions
-			@_updatePresets()
+			@updatePresets()
 
-	_updatePresets: ->
+	updatePresets: ->
 		presets = @_config.getPresets()
-		if presets.length
-			template = $('#t_options').text();
-			content = Mustache.render template, presets: presets
-			$('#presets').html content
+		template = $('#t_options').text();
+		content = Mustache.render template, presets: presets
+		$('#presets').html content
+
+	lShow: ->
+		@$throbber.show()
+
+	lHide: ->
+		@$throbber.fadeOut()
+
 
 Adr.Popup.init()
 
 $ ->
 	$positions = $ '#positions'
 	$presets = $ '#presets'
+	$settings = $ '#settings'
+	$throbber = $ '#throbber'
 
-	Adr.Popup.installInTab $positions, () ->
+	Adr.Popup.installInTab $positions, $throbber, () ->
 
 		$('#update').bind 'click', (event) ->
 			event.preventDefault()
@@ -222,3 +240,28 @@ $ ->
 			event.preventDefault()
 			preset = window.prompt("Please enter name for the preset","")
 			Adr.Popup.savePreset(preset) if preset != ''
+
+		$('#config').bind 'click', (event) ->
+			event.preventDefault()
+			$positions.toggle()
+			$settings.toggle()
+
+		$('#export').bind 'click', (event) ->
+			event.preventDefault()
+			Adr.Popup.lShow()
+			$('#data').val Adr.Config.jExport()
+			Adr.Popup.lHide()
+
+		$('#import').bind 'click', (event) ->
+			event.preventDefault()
+			Adr.Popup.lShow()
+			Adr.Config.jImport $('#data').val()
+			Adr.Popup.updatePresets()
+			Adr.Popup.lHide()
+
+		$('#clear').bind 'click', (event) ->
+			event.preventDefault()
+			Adr.Popup.lShow()
+			Adr.Config.reset()
+			Adr.Popup.updatePresets()
+			Adr.Popup.lHide()
