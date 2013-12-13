@@ -34,3 +34,4 @@ compile_extension: clean generate_images generate_js copy_files
 
 clean:
 	rm -rf $(BUILD)/*
+	rm -rf $(BIN)/*
