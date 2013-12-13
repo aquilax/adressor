@@ -1,12 +1,21 @@
+body{
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 12px;
+}
 #positions td {
 	vertical-align: top;
 }
+#positions td.title {
+	cursor: crosshair;
+}
 #positions input {
+	border: 1px solid #333;
+	padding: 0 2px;
+	text-align: right;
 	width: 3em;
-	border: 1px solid #333
 }
 #positions textarea {
-	height: 1em;
+	height: 1.1em;
 	overflow:hidden;
 }
 #positions textarea:focus {

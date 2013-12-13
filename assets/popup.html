@@ -8,23 +8,32 @@
 		<script type="text/javascript" src="/assets/js/popup.js"></script>
 	</head>
 	<body>
-		<button id="start">Install</button>
-		<button id="get_ads">Get Ads</button>
 		<button id="update">Update</button>
 		<table id="positions"></table>
 		<script type="application/mustache" id="t_positions">
-			{{#ads}}
-			<tr data-id={{id}}>
-				<td class="title">{{id}}</td>
-				<td><input class="width" data-val="{{width}}" value="{{width}}"></td>
-				<td><input class="height" data-val="{{height}}" value="{{height}}"></td>
-				<td><textarea class="html" data-val="{{html}}">{{{html}}}</textarea></td>
-				<td class="nbsp">
-					<button class="image" title="Insert Image">I</button>
-					<button class="reset" title="Reset">R</button>
-				</td>
-			</tr>
-			{{/ads}}
+			<thead>
+				<tr>
+					<th>Slot</th>
+					<th>Width</th>
+					<th>Height</th>
+					<th>Code</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{#ads}}
+				<tr data-id={{id}}>
+					<td class="title">{{id}}</td>
+					<td><input class="width" data-val="{{width}}" value="{{width}}"></td>
+					<td><input class="height" data-val="{{height}}" value="{{height}}"></td>
+					<td><textarea class="html" data-val="{{html}}">{{{html}}}</textarea></td>
+					<td class="nbsp">
+						<button class="image" title="Insert Image">I</button>
+						<button class="reset" title="Reset">R</button>
+					</td>
+				</tr>
+				{{/ads}}
+			</tbody>
 		</script>
 	</body>
 </html>

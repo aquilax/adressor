@@ -2,17 +2,15 @@ window.Adr = window.Adr || {}
 
 window.Adr =
 
-	selector: '.wikia-ad'
-
 	init: ->
 		self = @
 		chrome.runtime.onMessage.addListener (request, sender, sendResponse) ->
 			console.log request
 			sendResponse self[request.exec] request.args... if self[request.exec]
 
-	getPositions: (callback) ->
+	getPositions: (selector, callback) ->
 		result = []
-		$(@selector).each (index, ad) ->
+		$(selector).each (index, ad) ->
 			$ad = $(ad)
 			result.push
 				id: $ad.attr 'id'
@@ -29,19 +27,18 @@ window.Adr =
 		'done'
 
 	generateColor: (r, g, b) ->
-		return '#' +
-		(r || 0 % 255).toString(16) +
-		(g || 0 % 255).toString(16) +
-		(b || 0 % 255).toString(16)
+		c = 'rgb(' + (r % 255)+ ',' + (g % 255) + ',' + (b % 255) + ')'
+		console.log c
+		c
 
-generateImage: (id, width, height, color) ->
+	generateImage: (id, width, height, color) ->
 		canvas = document.createElement 'canvas'
 		$(canvas).attr 'width', width
 		$(canvas).attr 'height', height
 		canvas.widht = width
 		canvas.height = height
 		ctx = canvas.getContext '2d'
-		ctx.fillStyle = color || @generateColor(width, height, 0)
+		ctx.fillStyle = color || @generateColor(width, 255, height)
 		ctx.fillRect 0, 0, width, height
 		ctx.fillStyle = '#000'
 		ctx.fillText id, 2, 10
@@ -55,7 +52,7 @@ generateImage: (id, width, height, color) ->
 		if ad.html == '[image]'
 			$el.html @generateImage ad.id, parseInt(ad.width, 10), parseInt(ad.height, 10)
 		else
-			$el.html ad.html
+			$el.empty().html ad.html
 		true
 
 	updateAd: ($ad, ad) ->
@@ -79,6 +76,9 @@ generateImage: (id, width, height, color) ->
 			$el.css 'border', 'none'
 		, 500
 		true
+	ping: ->
+		'pong'
+
 
 $ ->
 	Adr.init()

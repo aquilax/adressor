@@ -5,6 +5,7 @@
 	"version": "1.0",
 
 	"permissions": [
+		"storage",
 		"http://*.wikia.com/",
 		"http://*.wikia-dev.com/"
 	],
