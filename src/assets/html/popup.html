@@ -8,8 +8,21 @@
 		<script type="text/javascript" src="/assets/js/popup.js"></script>
 	</head>
 	<body>
-		<button id="update">Update</button>
+		<div id="command" style="display:none">
+			<button id="update" class="fr">Update Page</button>
+			<label for="preset">Presets:</label>
+			<select id="presets">
+				<option value="">Presets</option>
+			</select>
+			<button id="load_preset">Load</button>
+			<button id="save_preset">Save</button>
+		</div>			
 		<div id="positions"></div>
+		<script type="application/mustache" id="t_options">
+			{{#presets}}
+			<option value={{.}}>{{.}}</option>
+			{{/presets}}
+		</script>
 		<script type="application/mustache" id="t_wrong_tab">
 			<div class="notification">Nothing found.</div>
 		</script>
@@ -32,8 +45,8 @@
 					<td><input class="height" data-val="{{height}}" value="{{height}}"></td>
 					<td><textarea class="html" data-val="{{html}}">{{{html}}}</textarea></td>
 					<td class="nbsp">
-						<button class="image" title="Insert Image">I</button>
-						<button class="reset" title="Reset">R</button>
+						<input type="image" class="image" title="Insert Image" src="/assets/img/picture.png" />
+						<input type="image" class="reset" title="Reset" src="/assets/img/arrow_rotate_anticlockwise.png" />
 					</td>
 				</tr>
 				{{/ads}}

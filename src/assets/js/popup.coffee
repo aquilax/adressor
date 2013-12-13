@@ -20,8 +20,9 @@ window.Adr.Config =
 		true
 
 	save: (callback) ->
+		callback = callback || ->
 		data = {}
-		data[@key] = @_data
+		data[@_key] = @_data
 		chrome.storage.local.set data,  callback
 		true
 
@@ -36,8 +37,15 @@ window.Adr.Config =
 		@_data[@_presetKey][name] = data
 		@save()
 	
+	getPreset: (name) ->
+		@_data[@_presetKey][name]
+
 	removePreset: (name) ->
 		delete @_data[@_presetKey][name]
+		@save()
+
+	getPresets: ->
+		Object.keys @_data[@_presetKey]
 
 	jExport: ->
 		JSON.stringify @_data
@@ -56,7 +64,8 @@ window.Adr.Popup =
 		chrome.runtime.onMessage.addListener (request, sender, sendResponse) ->
 			self[request.exec] request.args..., sendResponse if self[request.exec]?
 		# TODO: Load is async
-		@_config.load()
+		@_config.load ->
+			self._updatePresets()
 	
 	installInTab: ($positions, callback) ->
 		self = @
@@ -105,7 +114,8 @@ window.Adr.Popup =
 
 	renderPositions: (positions)->
 		@$positions.empty()
-		if positions? && positions.length 
+		if positions? && positions.length
+			$('#command').show();
 			template = $('#t_positions').text();
 			content = Mustache.render template, ads: positions
 		else
@@ -122,7 +132,7 @@ window.Adr.Popup =
 
 	collectData: ($container) ->
 		data = []
-		$container.find('tr').each (index, element) ->
+		$container.find('tbody tr').each (index, element) ->
 			$el = $ element
 			data.push
 				id: $el.data 'id'
@@ -133,11 +143,28 @@ window.Adr.Popup =
 
 	highlight: (id) ->
 		@sendCS 'highlight', id, ->
+	
+	loadPreset: (preset) ->
+		positions = @_config.getPreset preset
+		@renderPositions positions if positions?
+
+	savePreset: (preset) ->
+		if preset != ''
+			@_config.addPreset preset, @collectData @$positions
+			@_updatePresets()
+
+	_updatePresets: ->
+		presets = @_config.getPresets()
+		if presets.length
+			template = $('#t_options').text();
+			content = Mustache.render template, presets: presets
+			$('#presets').html content
 
 Adr.Popup.init()
 
 $ ->
 	$positions = $ '#positions'
+	$presets = $ '#presets'
 
 	Adr.Popup.installInTab $positions, () ->
 
@@ -145,7 +172,7 @@ $ ->
 			event.preventDefault()
 			Adr.Popup.update()
 
-		$positions.on 'click', 'button.reset', () ->
+		$positions.on 'click', 'input.reset', () ->
 			$row = $(this).parent().parent()
 
 			$width = $row.find '.width'
@@ -157,7 +184,7 @@ $ ->
 			$html = $row.find '.html'
 			$html.val $html.data 'val'
 
-		$positions.on 'click', 'button.image', () ->
+		$positions.on 'click', 'input.image', () ->
 			$row = $(this).parent().parent()
 			$row.find('.html').html('[image]')
 
@@ -167,3 +194,13 @@ $ ->
 				id = $row.data 'id'
 				Adr.Popup.highlight id
 		, '#positions td.title'
+
+		$('#load_preset').bind 'click', (event) ->
+			event.preventDefault()
+			preset = $presets.val()
+			Adr.Popup.loadPreset(preset) if preset != ''
+		
+		$('#save_preset').bind 'click', (event) ->
+			event.preventDefault()
+			preset = window.prompt("Please enter name for the preset","")
+			Adr.Popup.savePreset(preset) if preset != ''

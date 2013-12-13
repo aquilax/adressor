@@ -1,0 +1,24 @@
+{
+	"manifest_version": 2,
+	"name": "Adressor",
+	"description": "Modifies ads on Wikia pages",
+	"version": "1.0",
+	"icons": {
+		"16": "assets/img/icon_16.png",
+		"48": "assets/img/icon_48.png",
+		"128": "assets/img/icon_128.png"
+	},
+	"permissions": [
+		"storage",
+		"http://*.wikia.com/",
+		"http://*.wikia-dev.com/"
+	],
+	"browser_action": {
+		"default_icon" : {
+			"19": "assets/img/icon_19.png",
+			"38": "assets/img/icon_38.png"
+		},
+		"default_title": "Wikia Adressor",
+		"default_popup": "assets/html/popup.html"
+	}
+}

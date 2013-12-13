@@ -32,3 +32,20 @@ body{
 	padding: 1em;
 	text-align: center;
 }
+#update {
+	font-weight: bold;
+}
+.fr {
+	float: right;
+}
+#command {
+	background: #729fcf;
+	border-radius: 4px;
+	padding: .4em;
+}
+#positions input[type="image"] {
+	border: none;
+	height: 16px;
+	padding: 0;
+	width: 16px;
+}

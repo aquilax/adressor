@@ -38,10 +38,11 @@ window.Adr =
 		canvas.widht = width
 		canvas.height = height
 		ctx = canvas.getContext '2d'
-		ctx.fillStyle = color || @generateColor(width, 255, height)
+		ctx.fillStyle = color || @generateColor(width, 128, height)
 		ctx.fillRect 0, 0, width, height
 		ctx.fillStyle = '#000'
 		ctx.fillText id, 2, 10
+		ctx.fillText width + 'x' + height, 2, 22
 		$('<img>')
 			.attr('src', canvas.toDataURL('image/png'))
 			.css
