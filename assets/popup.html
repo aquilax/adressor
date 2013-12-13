@@ -9,8 +9,12 @@
 	</head>
 	<body>
 		<button id="update">Update</button>
-		<table id="positions"></table>
+		<div id="positions"></div>
+		<script type="application/mustache" id="t_wrong_tab">
+			<div class="notification">Nothing found.</div>
+		</script>
 		<script type="application/mustache" id="t_positions">
+		<table>
 			<thead>
 				<tr>
 					<th>Slot</th>
@@ -34,6 +38,7 @@
 				</tr>
 				{{/ads}}
 			</tbody>
+		</table>
 		</script>
 	</body>
 </html>

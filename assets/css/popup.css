@@ -25,3 +25,10 @@ body{
 .nbsp {
 	white-space: nowrap;
 }
+.notification {
+	background: #fbcdcd;
+	border: 1px solid #f25050;
+	min-width: 300px;
+	padding: 1em;
+	text-align: center;
+}

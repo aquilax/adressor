@@ -105,10 +105,15 @@ window.Adr.Popup =
 
 	renderPositions: (positions)->
 		@$positions.empty()
-		template = $('#t_positions').text();
-		items = Mustache.render template,
-			ads: positions
-		@$positions.append(items)
+		if positions? && positions.length 
+			template = $('#t_positions').text();
+			content = Mustache.render template, ads: positions
+		else
+			template = $('#t_wrong_tab').text();
+			content = Mustache.render template, {}
+
+		@$positions.append(content)
+
 
 	update: () ->
 		data = @collectData @$positions
