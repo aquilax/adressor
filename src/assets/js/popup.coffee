@@ -76,14 +76,18 @@ window.Adr.Popup =
 					
 
 	install: (tab, callback) ->
-		chrome.tabs.executeScript tab.id,
-			file: "assets/js/external/jquery-2.0.3.min.js"
-			allFrames: false
-		, () ->
-			chrome.tabs.executeScript tab.id,
-				file: "assets/js/injection.js"
-				allFrames: false
-			, () ->
+		@sendCS 'ping', (response) ->
+			if response == undefined
+				chrome.tabs.executeScript tab.id,
+					file: "assets/js/external/jquery-2.0.3.min.js"
+					allFrames: false
+				, () ->
+					chrome.tabs.executeScript tab.id,
+						file: "assets/js/injection.js"
+						allFrames: false
+					, () ->
+						callback()
+			else
 				callback()
 
 	getCurrentTab: (callback)->
@@ -126,19 +130,33 @@ window.Adr.Popup =
 
 
 	update: () ->
-		data = @collectData @$positions
+		data = @collectData @$positions, true
 		@sendCS 'updatePositions', data, (response) ->
 			log response
 
-	collectData: ($container) ->
+	collectData: ($container, changesOnly) ->
 		data = []
+
+		isChanged = ($el) ->
+			changed = false
+			$el.find('[data-val]').each (index, element) ->
+				$element = $ element
+				if String($element.val()) != String($element.data('val'))
+					changed = true
+			changed
+
 		$container.find('tbody tr').each (index, element) ->
 			$el = $ element
-			data.push
+			row =
 				id: $el.data 'id'
 				width: $el.find('.width').val()
 				height: $el.find('.height').val()
 				html: $el.find('.html').val()
+			if changesOnly
+				if isChanged $el
+					data.push row
+			else
+				data.push row
 		data
 
 	highlight: (id) ->

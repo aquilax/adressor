@@ -5,7 +5,6 @@ window.Adr =
 	init: ->
 		self = @
 		chrome.runtime.onMessage.addListener (request, sender, sendResponse) ->
-			console.log request
 			sendResponse self[request.exec] request.args... if self[request.exec]
 
 	getPositions: (selector, callback) ->
@@ -16,7 +15,7 @@ window.Adr =
 				id: $ad.attr 'id'
 				height: $ad.height()
 				width: $ad.width()
-				html: $ad.html()
+				html: '[keep]' #$ad.html()
 			true
 		result
 
@@ -24,12 +23,10 @@ window.Adr =
 		self = @
 		$.each data, (index, ad) ->
 			self.updateAd $('#'+ad.id), ad
-		'done'
+		true
 
 	generateColor: (r, g, b) ->
-		c = 'rgb(' + (r % 255)+ ',' + (g % 255) + ',' + (b % 255) + ')'
-		console.log c
-		c
+		'rgb(' + (r % 255)+ ',' + (g % 255) + ',' + (b % 255) + ')'
 
 	generateImage: (id, width, height, color) ->
 		canvas = document.createElement 'canvas'
@@ -64,7 +61,7 @@ window.Adr =
 		if $ad.height() != ad.height
 			$ad.height(ad.height)
 			changed = true
-		if $ad.html() != ad.html
+		if ad.html != '[keep]'
 			@replaceHTML $ad, ad
 			changed = true;
 		$ad.css 'overflow', 'hidden' if changed
