@@ -17,6 +17,8 @@ copy_files: create_dirs
 	cp $(SRC)/manifest.json $(BUILD) 
 	cp $(SRC)/assets/html/* $(BUILD)/assets/html
 	cp $(SRC)/assets/img/* $(BUILD)/assets/img
+	cp $(SRC)/assets/css/* $(BUILD)/assets/css
+	cp -r $(SRC)/assets/js/external $(BUILD)/assets/js
 
 generate_js: create_dirs
 	coffee -o $(BUILD)/assets/js $(SRC)/assets/js/*.coffee 
