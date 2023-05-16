@@ -25,7 +25,7 @@ generate_js: create_dirs
 
 generate_images: create_dirs
 	for size in 16 19 38 48 128; do \
-		inkscape $(SRC)/assets/raw/icon.svg -w $$size -h $$size --export-png=$(BUILD)/assets/img/icon_$$size.png ; \
+		inkscape $(SRC)/assets/raw/icon.svg -w $$size -h $$size --export-filename=$(BUILD)/assets/img/icon_$$size.png ; \
 	done
 
 compile_extension: clean generate_images generate_js copy_files
