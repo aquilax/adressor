@@ -2,7 +2,7 @@
 	"manifest_version": 2,
 	"name": "Adressor",
 	"description": "Modifies ads on Wikia pages",
-	"version": "1.0",
+	"version": "2.0",
 	"icons": {
 		"16": "assets/img/icon_16.png",
 		"48": "assets/img/icon_48.png",

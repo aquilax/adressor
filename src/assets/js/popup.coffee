@@ -28,15 +28,15 @@ window.Adr.Config =
 
 	get: (key) ->
 		@_data[key]
-	
+
 	set: (key, value) ->
 		@_data[key] = value
 		@save()
-	
+
 	addPreset: (name, data) ->
 		@_data[@_presetKey][name] = data
 		@save()
-	
+
 	getPreset: (name) ->
 		@_data[@_presetKey][name]
 
@@ -49,7 +49,7 @@ window.Adr.Config =
 
 	jExport: ->
 		JSON.stringify @_data
-	
+
 	jImport: (json) ->
 		@_data = JSON.parse json
 		@_data = @_default if !@_data?
@@ -71,7 +71,7 @@ window.Adr.Popup =
 		# TODO: Load is async
 		@_config.load ->
 			self.updatePresets()
-	
+
 	installInTab: ($positions, $throbber, callback) ->
 		self = @
 		@$positions = $positions
@@ -81,13 +81,13 @@ window.Adr.Popup =
 			self.install tab, ->
 				self.getPositions (callback)
 				self.lHide()
-					
+
 
 	install: (tab, callback) ->
 		@sendCS 'ping', (response) ->
 			if response == undefined
 				chrome.tabs.executeScript tab.id,
-					file: "assets/js/external/jquery-2.0.3.min.js"
+					file: "assets/js/external/jquery-3.7.0.min.js"
 					allFrames: false
 				, () ->
 					chrome.tabs.executeScript tab.id,
@@ -171,7 +171,7 @@ window.Adr.Popup =
 
 	highlight: (id) ->
 		@sendCS 'highlight', id, ->
-	
+
 	loadPreset: (preset) ->
 		positions = @_config.getPreset preset
 		@renderPositions positions if positions?
@@ -235,7 +235,7 @@ $ ->
 			event.preventDefault()
 			preset = $presets.val()
 			Adr.Popup.loadPreset(preset) if preset != ''
-		
+
 		$('#save_preset').bind 'click', (event) ->
 			event.preventDefault()
 			preset = window.prompt("Please enter name for the preset","")

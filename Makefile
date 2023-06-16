@@ -3,6 +3,7 @@ BUILD=build
 BIN=bin
 KEYS=keys
 CHROME_BIN=google-chrome
+VERSION := $(shell jq -r .version $(SRC)/manifest.json)
 
 all: clean compile_extension
 
@@ -14,14 +15,14 @@ create_dirs:
 	mkdir $(BUILD)/assets/html
 
 copy_files: create_dirs
-	cp $(SRC)/manifest.json $(BUILD) 
+	cp $(SRC)/manifest.json $(BUILD)
 	cp $(SRC)/assets/html/* $(BUILD)/assets/html
 	cp $(SRC)/assets/img/* $(BUILD)/assets/img
 	cp $(SRC)/assets/css/* $(BUILD)/assets/css
 	cp -r $(SRC)/assets/js/external $(BUILD)/assets/js
 
 generate_js: create_dirs
-	coffee -o $(BUILD)/assets/js $(SRC)/assets/js/*.coffee 
+	coffee -o $(BUILD)/assets/js $(SRC)/assets/js/*.coffee
 
 generate_images: create_dirs
 	for size in 16 19 38 48 128; do \
@@ -29,8 +30,7 @@ generate_images: create_dirs
 	done
 
 compile_extension: clean generate_images generate_js copy_files
-	$(CHROME_BIN) --pack-extension=$(BUILD) --pack-extension-key=$(KEYS)/adressor.pem
-	mv $(BUILD).crx $(BIN)/adressor.crx
+	cd $(BUILD); zip -r ../$(BIN)/adressor-$(VERSION).zip *; cd ..
 
 clean:
 	rm -rf $(BUILD)/*
